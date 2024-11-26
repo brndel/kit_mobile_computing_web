@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <button onclick="start_server()">Start Server</button>
+    <button onclick="start_client()">Start Client</button>
+
+    <input type="text" name="remote-desc" id="remote-desc">
+
+    <div id="remote-ice-offers">
+
+    </div>
+</body>
+
+<script>
+
+    const remoteIceOffers = document.getElementById("remote-ice-offers");
+    const remoteDescInput = document.getElementById("remote-desc");
+
+    var local;
+    var remote;
+
+    function start_server() {
+        local = new RTCPeerConnection()
+        local.onicecandidate = e => {
+            const localDescString = JSON.stringify(local.localDescription)
+            console.log(localDescString)
+            const iceSpan = document.createElement("div")
+            iceSpan.textContent = localDescString 
+            remoteIceOffers.appendChild(iceSpan)
+        }
+
+        const lchannel = local.createDataChannel("channel")
+        set_channel_callbacks(lchannel)
+
+        local.createOffer().then((offer) => local.setLocalDescription(offer))
+    }
+
+    function accept_server() {
+        const remoteDescString = remoteDescInput.value
+
+        const remoteDesc = JSON.parse(remoteDescString)
+
+        local.setRemoteDescription(remoteDesc)
+    }
+
+    function start_client() {
+        remote = new RTCPeerConnection()
+        remote.onicecandidate = e => console.log(JSON.stringify(remote.localDescription))
+
+        remote.ondatachannel = ({ channel }) => {
+            set_channel_callbacks(channel)
+            remote.channel = channel
+        }
+
+        const remoteDescString = remoteDescInput.value
+
+        const remoteDesc = JSON.parse(remoteDescString)
+
+        remote.setRemoteDescription(remoteDesc)
+        remote.createAnswer().then((ans) => console.log(remote.setLocalDescription(ans)))
+
+    }
+
+    function set_channel_callbacks(channel) {
+        channel.onopen = () => console.log('open')
+        channel.onclose = () => console.log('close')
+        channel.onmessage = ({ data }) => console.log(data)
+    }
+
+</script>
+
+</html>

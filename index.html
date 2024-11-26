@@ -10,6 +10,7 @@
 <body>
 
     <button onclick="start_server()">Start Server</button>
+    <button onclick="accept_server()">Accept Server</button>
     <button onclick="start_client()">Start Client</button>
 
     <input type="text" name="remote-desc" id="remote-desc">
@@ -21,26 +22,41 @@
 
 <script>
 
+    const servers = {
+        iceServers: [
+            {
+                urls: ["stun:stun1.1.google.com:19302", "stun:stun2.1.google.com:19302"]
+            }
+        ]
+    }
+
     const remoteIceOffers = document.getElementById("remote-ice-offers");
     const remoteDescInput = document.getElementById("remote-desc");
 
     var local;
     var remote;
 
-    function start_server() {
-        local = new RTCPeerConnection()
-        local.onicecandidate = e => {
-            const localDescString = JSON.stringify(local.localDescription)
-            console.log(localDescString)
-            const iceSpan = document.createElement("div")
-            iceSpan.textContent = localDescString 
-            remoteIceOffers.appendChild(iceSpan)
-        }
+    async function start_server() {
+        local = new RTCPeerConnection(servers)
+        // local.onicecandidate = e => {
+        //     const localDescString = JSON.stringify(local.localDescription)
+        //     console.log(localDescString)
+        //     const iceSpan = document.createElement("div")
+        //     iceSpan.textContent = localDescString 
+        //     remoteIceOffers.appendChild(iceSpan)
+        // }
 
         const lchannel = local.createDataChannel("channel")
         set_channel_callbacks(lchannel)
 
-        local.createOffer().then((offer) => local.setLocalDescription(offer))
+        const offerDesc = await local.createOffer()
+        local.setLocalDescription(offerDesc)
+
+        const offserString = JSON.stringify(offerDesc)
+
+        const iceSpan = document.createElement("div")
+        iceSpan.textContent = offserString 
+        remoteIceOffers.appendChild(iceSpan)
     }
 
     function accept_server() {
@@ -52,7 +68,7 @@
     }
 
     function start_client() {
-        remote = new RTCPeerConnection()
+        remote = new RTCPeerConnection(servers)
         remote.onicecandidate = e => {
             const localDescString = JSON.stringify(remote.localDescription)
             console.log(localDescString)

@@ -53,7 +53,13 @@
 
     function start_client() {
         remote = new RTCPeerConnection()
-        remote.onicecandidate = e => console.log(JSON.stringify(remote.localDescription))
+        remote.onicecandidate = e => {
+            const localDescString = JSON.stringify(remote.localDescription)
+            console.log(localDescString)
+            const iceSpan = document.createElement("div")
+            iceSpan.textContent = localDescString 
+            remoteIceOffers.appendChild(iceSpan)
+        }
 
         remote.ondatachannel = ({ channel }) => {
             set_channel_callbacks(channel)

@@ -195,7 +195,9 @@ function endGame() {
         gameOver = true;
         gameOverAnimFrame = 0;
     } else {
-        navigator.vibrate([100, 10, 50])
+        if (navigator.vibrate !== undefined) {
+            navigator.vibrate([100, 10, 50])
+        }
         setPage("game-restart-page");
     }
 }

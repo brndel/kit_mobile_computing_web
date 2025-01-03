@@ -3,100 +3,78 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <title>MocIot Project</title>
 </head>
 
-<body>
+<body onload="init()">
+    <main>
+        <div id="connection-page">
+            <h1 id="connection-page-header">…</h1>
 
-    <button onclick="start_server()">Start Server</button>
-    <button onclick="accept_server()">Accept Server</button>
-    <button onclick="start_client()">Start Client</button>
+            <div class="box pc-only">
+                <div id="peer-id-qr-code-display"></div>
+                <div>
+                    <code id="peer-id-span"></code>
+                    <button onclick="copyPeerIdToClipboard()">Copy id to clipboard</button>
+                </div>
+            </div>
 
-    <input type="text" name="remote-desc" id="remote-desc">
+            <div class="box mobile-only">
+                <button onclick="startQrCodeScanner()">
+                    Scan QR-Code using camera
+                </button>
 
-    <div id="remote-ice-offers">
+                <div id="peer-id-qr-code-scanner">
+                </div>
 
-    </div>
+                <div>
+                    <input type="text" id="peer-id-input" placeholder="Enter id by hand">
+
+                    <button onclick="connectToPeer()">Connect</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-page" style="display: none;">
+            <h1 id="game-page-header">…</h1>
+
+            <button id="game-start-button" class="mobile-only">Start</button>
+        </div>
+
+        <div id="game-play-page" style="display: none;">
+            <canvas id="game-play-canvas" width="1024" height="512" class="pc-only">
+                It seems your Browser does not support canvas 
+            </canvas>
+
+            <h1 class="mobile-only">
+                Rotate your phone to move the platform
+            </h1>
+            <span class="mobile-only">
+                Collect the squares with your platform and dodge the circles
+            </span>
+        </div>
+
+        <div id="game-restart-page" class="mobile-only" style="display: none;">
+            <h1>
+                You lost
+            </h1>
+            <button onclick="restartGame()">
+                Restart
+            </button>
+        </div>
+
+    </main>
+
 </body>
 
-<script>
+<script src="https://unpkg.com/peerjs@1.5.0/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    const servers = {
-        iceServers: [
-            {
-                urls: ["stun:stun1.1.google.com:19302", "stun:stun2.1.google.com:19302"]
-            }
-        ]
-    }
-
-    const remoteIceOffers = document.getElementById("remote-ice-offers");
-    const remoteDescInput = document.getElementById("remote-desc");
-
-    var local;
-    var remote;
-
-    async function start_server() {
-        local = new RTCPeerConnection(servers)
-        // local.onicecandidate = e => {
-        //     const localDescString = JSON.stringify(local.localDescription)
-        //     console.log(localDescString)
-        //     const iceSpan = document.createElement("div")
-        //     iceSpan.textContent = localDescString 
-        //     remoteIceOffers.appendChild(iceSpan)
-        // }
-
-        const lchannel = local.createDataChannel("channel")
-        set_channel_callbacks(lchannel)
-
-        const offerDesc = await local.createOffer()
-        local.setLocalDescription(offerDesc)
-
-        const offserString = JSON.stringify(offerDesc)
-
-        const iceSpan = document.createElement("div")
-        iceSpan.textContent = offserString 
-        remoteIceOffers.appendChild(iceSpan)
-    }
-
-    function accept_server() {
-        const remoteDescString = remoteDescInput.value
-
-        const remoteDesc = JSON.parse(remoteDescString)
-
-        local.setRemoteDescription(remoteDesc)
-    }
-
-    function start_client() {
-        remote = new RTCPeerConnection(servers)
-        remote.onicecandidate = e => {
-            const localDescString = JSON.stringify(remote.localDescription)
-            console.log(localDescString)
-            const iceSpan = document.createElement("div")
-            iceSpan.textContent = localDescString 
-            remoteIceOffers.appendChild(iceSpan)
-        }
-
-        remote.ondatachannel = ({ channel }) => {
-            set_channel_callbacks(channel)
-            remote.channel = channel
-        }
-
-        const remoteDescString = remoteDescInput.value
-
-        const remoteDesc = JSON.parse(remoteDescString)
-
-        remote.setRemoteDescription(remoteDesc)
-        remote.createAnswer().then((ans) => console.log(remote.setLocalDescription(ans)))
-
-    }
-
-    function set_channel_callbacks(channel) {
-        channel.onopen = () => console.log('open')
-        channel.onclose = () => console.log('close')
-        channel.onmessage = ({ data }) => console.log(data)
-    }
-
-</script>
+<script src="./script/connection.js"></script>
+<script src="./script/game.js"></script>
+<script src="./script.js"></script>
 
 </html>

@@ -1,0 +1,191 @@
+#viewport {
+    width: 256px;
+    height: 512px;
+    transform: perspective(500px);
+    border: dashed 8px gray;
+    border-radius: 16px;
+    margin: 64px;
+    transform-style: preserve-3d;
+}
+
+#virtual-phone {
+    width: 256px;
+    height: 512px;
+    display: flex;
+    /* transform: translateZ(-500px) rotateY(170deg) rotateX(20deg); */
+    transform-style: preserve-3d;
+}
+
+#phone-front {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(blue, cyan);
+    border: 2px black solid;
+    border-radius: 16px;
+    transform: translateZ(5px);
+    transform-style: preserve-3d;
+}
+
+#phone-back {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgb(52, 52, 52), rgb(27, 27, 27));
+    border: 2px black solid;
+    border-radius: 16px;
+    transform: translateZ(-5px);
+    transform-style: preserve-3d;
+}
+
+:root {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.pc .mobile-only {
+    display: none !important;
+}
+
+.mobile .pc-only {
+    display: none !important;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-color: bisque;
+    align-items: center;
+    justify-content: center;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main > div {
+    background-color: coral;
+    color: bisque;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main > div > h1 {
+    text-align: center;
+}
+
+#connection-page {
+    width: 100%;
+    gap: 1em;
+    
+    align-items: center;
+}
+
+
+#connection-page #peer-id-pc {
+    background-color: white;
+    color: black;
+}
+
+#connection-page .box {
+    background-color: white;
+    color: black;
+    padding: 1em;
+    box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 16px;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+
+#connection-page input {
+    background-color: bisque;
+    padding: 1em;
+    border: 1px solid coral;
+    border-radius: 1em;
+}
+
+
+#game-page {
+    background-color: transparent;
+    color: coral;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#game-start-button {
+    background-color: cornflowerblue;
+    color: white;
+    border: 0;
+    border-radius: 1em;
+    padding: 1em;
+    font-size: 2em;
+    font-weight: bolder;
+}
+
+
+#game-rotation-handle {
+    background-color: blueviolet;
+    display: flex;
+    width: 64px;
+    height: 32px;
+}
+
+.pc #game-play-page {
+    padding: 0;
+}
+
+#game-restart-page {
+    background-color: black;
+    color: white;
+    border-radius: 1em;
+}
+
+#game-restart-page button {
+    font-size: 2em;
+    font-weight: bolder;
+    background-color: white;
+}
+
+button {
+    background-color: bisque;
+    color: black;
+    border: none;
+    padding: 1em;
+    border-radius: 1em;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 4px;
+    cursor: pointer;
+
+    transition: box-shadow 100ms ease-out, transform 100ms ease-out;
+}
+
+button:hover {
+    box-shadow: rgba(0, 0, 0, 0.21) 4px 4px 6px;
+}
+
+button:active {
+    box-shadow: rgba(0, 0, 0, 0.21) 1px 1px 2px;
+    transform: translate(2px, 2px);
+}
+
+button:disabled {
+    opacity: 0.5;
+}

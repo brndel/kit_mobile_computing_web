@@ -2,6 +2,7 @@ const connectionPage = document.getElementById("connection-page");
 const gamePage = document.getElementById("game-page");
 const gamePlayPage = document.getElementById("game-play-page");
 const gameRestartPage = document.getElementById("game-restart-page");
+const connectionLostPage = document.getElementById("connection-lost-page");
 
 function setPage(id) {
     function checkElement(elem) {
@@ -12,6 +13,7 @@ function setPage(id) {
     checkElement(gamePage);
     checkElement(gamePlayPage);
     checkElement(gameRestartPage);
+    checkElement(connectionLostPage);
 }
 
 const body = document.getElementsByTagName("body")[0];
@@ -35,7 +37,7 @@ function init() {
 function createPeer() {
     const peer = new Peer();
 
-    peer.on("open", setPeerIdDisplay);
+    peer.on("open", onPeerOpen);
 
     peer.on("close", () => console.log("peer close"));
     peer.on("error", err => console.log("peer error", err));
@@ -66,8 +68,9 @@ function setConnection(conn) {
 
     connection.on("close", () => {
         console.log("connection close");
-        endGame();
+        peer.destroy();
         gameOverThroughDisconnect = true;
+        endGame();
     })
 }
 

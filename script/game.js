@@ -135,18 +135,18 @@ function updateGame(timestamp) {
                         obj.x = gamePlayCanvas.width - 50;
                     }
                 }
-    
+
                 if (Math.random() < 0.05) {
                     obj.y += Math.random() * 100;
                 }
             }
         })
-    
+
         gameObjects = gameObjects.filter(obj => obj.y < (gamePlayCanvas.height + 50));
-    
+
         if (timestamp > nextSquareSpawnTS) {
             nextSquareSpawnTS = timestamp + Math.random() * 1000 + 200;
-    
+
             gameObjects.push({
                 x: Math.random() * gamePlayCanvas.width * 0.8 + gamePlayCanvas.width * 0.1,
                 y: -50,
@@ -157,7 +157,7 @@ function updateGame(timestamp) {
         }
 
         const platformPos = calculatePlaformPos(rotation, gamePlayCanvas);
-    
+
         gameObjects = gameObjects.filter(obj => {
             if (obj.y > platformPos.y - PLATFORM_HEIGHT / 2 && obj.y < platformPos.y + PLATFORM_HEIGHT / 2) {
                 if (obj.x > platformPos.x - PLATFORM_WIDTH / 2 && obj.x < platformPos.x + PLATFORM_WIDTH / 2) {
@@ -170,7 +170,7 @@ function updateGame(timestamp) {
                     }
                 }
             }
-    
+
             return true;
         });
     }
@@ -198,7 +198,11 @@ function endGame() {
         if (navigator.vibrate !== undefined) {
             navigator.vibrate([100, 10, 50])
         }
-        setPage("game-restart-page");
+        if (gameOverThroughDisconnect) {
+            setPage("connection-lost-page");
+        } else {
+            setPage("game-restart-page");
+        }
     }
 }
 
@@ -291,7 +295,7 @@ function updateCanvas() {
         ctx.fillStyle = fgColor;
         ctx.textAlign = "center";
         ctx.font = "80px Verdana";
-        ctx.fillText("Connection lost", gamePlayCanvas.width/2.0, gamePlayCanvas.height/2.0);
+        ctx.fillText("Connection lost", gamePlayCanvas.width / 2.0, gamePlayCanvas.height / 2.0);
     }
 }
 

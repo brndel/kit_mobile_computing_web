@@ -32,20 +32,13 @@ function onOrientationChange() {
 async function registerMotionCallbacks() {
     console.log("registering listeners");
     try {
-        // if (DeviceMotionEvent.requestPermission !== undefined) {
-        //     let resp = await DeviceMotionEvent.requestPermission()
-        // }
-        // window.addEventListener("devicemotion", handleMotion)
-
         if (DeviceOrientationEvent.requestPermission !== undefined) {
-            let resp = await DeviceOrientationEvent.requestPermission()
-
+            await DeviceOrientationEvent.requestPermission()
         }
         window.addEventListener("deviceorientation", onDeviceOrientation)
 
     } catch (err) {
         console.log(err)
-        // btn.textContent = err
     }
 }
 

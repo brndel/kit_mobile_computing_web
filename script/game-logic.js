@@ -29,9 +29,11 @@ function endGame() {
         gameOver = true;
         gameOverAnimFrame = 0;
     } else {
+        // Only chrome on android supports vibration, so we need to check if the function exists in the current browser
         if (navigator.vibrate !== undefined) {
             navigator.vibrate([100, 10, 50])
         }
+
         if (disconnected) {
             setPage("connection-lost-page");
         } else {
@@ -118,6 +120,8 @@ function createObject() {
         y: -50,
         rot: Math.random() * 2 * Math.PI,
         angular_velocity: (Math.random() * 2 - 1) * Math.PI,
+        // 90% of objects are 'good', they increase the score when collected
+        // 10% of objects are 'bad', they end the game when collected
         type: Math.random() > 0.1 ? "good" : "bad",
     };
 }
@@ -131,8 +135,8 @@ function moveObject(obj, delta) {
     obj.y += 200.0 * delta;
     obj.rot += obj.angular_velocity * delta;
     if (obj.type == "bad") {
-        // Only teleport bad objects in the upper half of the canvas, so they don't teleport into the platform and the user can't react
 
+        // Only teleport bad objects in the upper half of the canvas, so they don't teleport into the platform and the user can't react
         if (obj.y < gamePlayCanvas.height / 2) {
             // Sometimes teleport the bad objects left or right
             if (Math.random() < 0.1) {
@@ -144,7 +148,7 @@ function moveObject(obj, delta) {
                     obj.x = gamePlayCanvas.width - 50;
                 }
             }
-    
+
             // Sometimes teleport the bad objects down
             if (Math.random() < 0.05) {
                 obj.y += Math.random() * 100;
@@ -233,6 +237,7 @@ function updateCanvas() {
         var fgColor = "bisque";
     }
 
+    // clear the background
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, gamePlayCanvas.width, gamePlayCanvas.height);
 
@@ -241,26 +246,32 @@ function updateCanvas() {
 
     let pos = calculatePlaformPos(platform.rotation);
 
+    // transform the canvas to draw the platform
     ctx.translate(pos.x, pos.y);
     ctx.rotate(platform.rotation / 180 * Math.PI / 4.0);
 
+    // draw the platform
     ctx.fillStyle = fgColor;
     ctx.fillRect(-platform.width / 2, -platform.height / 2, platform.width, platform.height);
 
+    // draw the current score on the platform
     ctx.fillStyle = bgColor;
     ctx.textAlign = "center";
     ctx.font = "40px Verdana";
     ctx.fillText(gameState.score.toString(), 0, 15);
     ctx.resetTransform();
 
+    // draw all objects
     gameState.objects.forEach(obj => {
         ctx.translate(obj.x, obj.y);
         ctx.rotate(obj.rot);
         switch (obj.type) {
+            // Draw a basic square for good objects
             case "good":
                 ctx.fillStyle = fgColor;
                 ctx.fillRect(-10, -10, 20, 20);
                 break;
+            // Draw a 'glitchy' circle for bad objects
             case "bad":
                 function randomTriangle() {
                     ctx.moveTo(Math.random() * 40.0 - 20, Math.random() * 40.0 - 20);
@@ -268,7 +279,7 @@ function updateCanvas() {
                     ctx.lineTo(Math.random() * 40.0 - 20, Math.random() * 40.0 - 20);
                 }
 
-                // Draw random 'glitchy' trinagles around the circle in red, green and blue
+                // Draw random 'glitchy' triangles around the circle in red, green and blue
                 ["red", "green", "blue"].forEach(color => {
                     ctx.beginPath();
                     randomTriangle();

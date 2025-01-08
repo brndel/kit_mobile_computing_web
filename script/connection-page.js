@@ -15,10 +15,8 @@ var qrCodeScanner;
 function initConnectionPage() {
     if (isMobile) {
         connectionPageHeader.textContent = "Open this page on a desktop and scan the code"
-        // peerIdPcContainer.style.display = "none";
     } else {
         connectionPageHeader.textContent = "Scan this code with a mobile phone"
-        // peerIdMobileContainer.style.display = "none";
     }
 }
 

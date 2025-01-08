@@ -29,6 +29,10 @@ function onPeerOpen(id) {
     }
 }
 
+/**
+ * Reads the `id` parameter from the url and tries to connect to the given id.
+ * The `id` parameter is set, if the user scanned the qr code with the systems camera on their phone and opened the link from there
+ */
 function tryToConnectToPeerFromUrl() {
     let urlId = new URLSearchParams(window.location.search).get("id");
 
@@ -37,6 +41,11 @@ function tryToConnectToPeerFromUrl() {
     }
 }
 
+/**
+ * Creates and displays a qr code for the given id.
+ * 
+ * @param {string} id the id to display
+ */
 function setPeerIdDisplay(id) {
     let url = new URL(window.location.href);
     url.searchParams.append("id", id);
@@ -48,6 +57,9 @@ function setPeerIdDisplay(id) {
     peerIdSpan.textContent = id;
 }
 
+/**
+ * Starts the qr code scanner on mobile devices
+ */
 function startQrCodeScanner() {
     qrCodeScanner = new Html5QrcodeScanner(
         "peer-id-qr-code-scanner",
@@ -74,7 +86,6 @@ function onQrCodeScanned(decodeText, decodeResult) {
 
     connectToPeer(id);
 }
-
 
 
 function copyPeerIdToClipboard() {
